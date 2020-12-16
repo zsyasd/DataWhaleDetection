@@ -4,4 +4,5 @@ test set地址是http://host.robots.ox.ac.uk:8080/eval/downloads/VOC2012test.tar
 注意解压命令用的是"tar xf"而不是"unzip"
 
 锚框没啥，吴恩达会讲的更加详细。
+IoU主要就是 \frac{size of 实际}{size of 划分} 分别是两个锚框。
 这一节主要讲的是一些数据的准备，大体内容可以调包解决，就不需要根据教程上一点点弄了。并不是很重要。
