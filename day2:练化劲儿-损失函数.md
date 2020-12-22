@@ -46,3 +46,10 @@ confidence loss是在多类别置信度(c)上的softmax loss，公式如下：
 
 ![1431608647491_ pic](https://user-images.githubusercontent.com/55370336/102899155-764d4480-44a5-11eb-8853-0a08f50e5305.jpg)
 
+其中，l为预测框，g为ground truth。(cx,xy)为补偿(regress to offsets)后的默认框d的中心,(w,h)为默认框的宽和高。
+
+## Hard negative mining
+
+值得注意的是，一般情况下negative prior bboxes数量 >> positive prior bboxes数量，直接训练会导致网络过于重视负样本，预测效果很差。为了保证正负样本尽量平衡，我们这里使用SSD使用的在线难例挖掘策略(hard negative mining)，即依据confidience loss对属于负样本的prior bbox进行排序，只挑选其中confidience loss高的bbox进行训练，将正负样本的比例控制在positive：negative=1:3。其核心作用就是只选择负样本中容易被分错类的困难负样本来进行网络训练，来保证正负样本的平衡和训练的有效性。
+
+举个例子：假设在这 441 个 prior bbox 里，经过匹配后得到正样本先验框P个，负样本先验框 441−P 个。将负样本prior bbox按照prediction loss从大到小顺序排列后选择最高的M个prior bbox。这个M需要根据我们设定的正负样本的比例确定，比如我们约定正负样本比例为1:3时。我们就取M=3P，这M个loss最大的负样本难例将会被作为真正参与计算loss的prior bboxes，其余的负样本将不会参与分类损失的loss计算。
